@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Product Recommendations{% endblock %}
+
+{% block content %}
+<div class="home-section">
+    <div class="hero">
+        <h1>Find Your Perfect Products</h1>
+        <p>Enter your User ID to get personalized recommendations based on your purchase history</p>
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input 
+                type="number" 
+                id="userIdInput" 
+                placeholder="Enter your User ID" 
+                class="search-input"
+            >
+            <button onclick="searchRecommendations()" class="search-btn">Search</button>
+        </div>
+        <div class="suggested-users">
+            <p>Popular User IDs:</p>
+            <div class="user-buttons">
+                <button onclick="searchRecommendations(1)" class="user-btn">User 1</button>
+                <button onclick="searchRecommendations(2)" class="user-btn">User 2</button>
+                <button onclick="searchRecommendations(3)" class="user-btn">User 3</button>
+                <button onclick="searchRecommendations(5)" class="user-btn">User 5</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="recommendations" class="recommendations-container"></div>
+</div>
+
+<script>
+function searchRecommendations(userIdFromButton) {
+    const userId = userIdFromButton || document.getElementById('userIdInput').value.trim();
+    
+    if (!userId) {
+        alert('Please enter a User ID');
+        return;
+    }
+
+    const container = document.getElementById('recommendations');
+    container.innerHTML = '<p class="loading">Loading recommendations...</p>';
+
+    fetch(`/api/recommendations/${userId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('User not found or no purchase history');
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayRecommendations(data, userId);
+        })
+        .catch(error => {
+            container.innerHTML = `<div class="error-message">${error.message}</div>`;
+        });
+}
+
+function displayRecommendations(recommendations, userId) {
+    const container = document.getElementById('recommendations');
+    
+    let html = `<div class="results-header">
+        <h2>Recommended Products for User ${userId}</h2>
+        <p class="result-count">${recommendations.length} recommendations found</p>
+    </div>
+    <div class="products-grid">`;
+
+    recommendations.forEach(product => {
+        const similarityPercent = (product.score * 100).toFixed(1);
+        html += `
+        <div class="product-card">
+            <div class="product-header">
+                <h3>${product.product_name || 'Product ' + product.product_id}</h3>
+                <span class="similarity-badge">${similarityPercent}% Match</span>
+            </div>
+            <div class="product-details">
+                <p><strong>Category:</strong> ${product.category || 'N/A'}</p>
+                <p><strong>Price:</strong> $${parseFloat(product.price || 0).toFixed(2)}</p>
+                <p><strong>Similarity Score:</strong> <span class="score-bar"><span class="score-fill" style="width: ${product.score * 100}%"></span></span></p>
+            </div>
+        </div>`;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+</script>

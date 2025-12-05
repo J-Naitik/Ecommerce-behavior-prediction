@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}About - How It Works{% endblock %}
+
+{% block content %}
+<div class="about-section">
+    <h1>How Our Recommendation Engine Works</h1>
+    
+    <div class="about-content">
+        <div class="about-card">
+            <h2>Item-Based Collaborative Filtering</h2>
+            <p>Our recommendation engine uses advanced machine learning techniques to analyze your purchase history and find products similar to ones you've already bought.</p>
+        </div>
+
+        <div class="about-card">
+            <h2>Similarity Scoring</h2>
+            <p>We calculate similarity scores between products using cosine similarity on a user-item purchase matrix. Products with higher similarity scores are more likely to match your preferences.</p>
+        </div>
+
+        <div class="about-card">
+            <h2>Personalized Recommendations</h2>
+            <p>Each recommendation is tailored to your unique purchase history. We weight recent and frequently purchased items more heavily to ensure relevant suggestions.</p>
+        </div>
+
+        <div class="about-card">
+            <h2>Continuous Improvement</h2>
+            <p>Our system learns from patterns in millions of transactions to continuously improve recommendation accuracy and help you discover products you'll love.</p>
+        </div>
+
+        <div class="about-card">
+            <h2>Key Metrics</h2>
+            <ul>
+                <li><strong>Similarity Score:</strong> Ranges from 0 to 1, showing how closely a product relates to your past purchases</li>
+                <li><strong>Match Percentage:</strong> Displayed as a percentage for easy understanding</li>
+                <li><strong>Top Recommendations:</strong> We show your top 5 most relevant products</li>
+            </ul>
+        </div>
+    </div>
+</div>
